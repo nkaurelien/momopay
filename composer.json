@@ -6,13 +6,13 @@
         "momo",
         "cameroun"
     ],
-    "homepage": "",
+    "homepage": "https://github.com/nkaurelien/momopay",
     "license": "MIT",
     "authors": [
         {
             "name": "Nkumbe Aurelein",
             "email": "nkaurelien@gmail.com",
-            "homepage": "",
+            "homepage": "https://github.com/nkaurelien",
             "role": "Developer"
         },
         {

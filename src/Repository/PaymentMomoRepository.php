@@ -13,6 +13,12 @@ use Illuminate\Support\Fluent;
 class PaymentMomoRepository extends  PaymentMomoSandboxRepository
 {
 
+    /**
+     * @param MomoRequestToPayDto $momoRequestToPayDto
+     * @param $referenceId
+     * @return MomoRequestToPayResultDto
+     * @throws \Httpful\Exception\ConnectionErrorException
+     */
     public function requestToPay (MomoRequestToPayDto $momoRequestToPayDto, $referenceId)
     {
 
@@ -31,6 +37,11 @@ class PaymentMomoRepository extends  PaymentMomoSandboxRepository
         return $this->getPayment($referenceId);
     }
 
+    /**
+     * @param $referenceId
+     * @return MomoRequestToPayResultDto
+     * @throws \Httpful\Exception\ConnectionErrorException
+     */
     public function getPayment ($referenceId)
     {
 
