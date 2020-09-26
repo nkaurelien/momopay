@@ -1,0 +1,57 @@
+{
+    "name": "nkaurelien/momopay",
+    "description": "Paiement mobile avec mtn cameroun",
+    "keywords": [
+        "paiement",
+        "momo",
+        "cameroun"
+    ],
+    "homepage": "",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Nkumbe Aurelein",
+            "email": "nkaurelien@gmail.com",
+            "homepage": "",
+            "role": "Developer"
+        },
+        {
+            "name": "Tegomo Voukeng Armand",
+            "email": "tegomovarmand@gmail.com",
+            "role": "Developer"
+        },
+        {
+            "name": "Kamto Igor nathan",
+            "email": "igornathan777@gmail.com",
+            "role": "Developer"
+        }
+    ],
+    "require": {
+        "php": "^7.3",
+        "nategood/httpful": "^0.3.2",
+        "illuminate/console": "^5.8.15|^6.0|^7.0|^8.0",
+        "illuminate/contracts": "^5.8.15|^6.0|^7.0|^8.0",
+        "illuminate/events": "^5.8.15|^6.0|^7.0|^8.0",
+        "illuminate/filesystem": "^5.8.15|^6.0|^7.0|^8.0",
+        "illuminate/notifications": "^5.8.15|^6.0|^7.0|^8.0",
+        "illuminate/support": "^5.8.15|^6.0|^7.0|^8.0"
+    },
+    "require-dev": {},
+    "autoload": {
+        "psr-4": {
+            "Nkaurelien\\Momopay\\": "src"
+        }
+    },
+    "config": {
+        "sort-packages": true
+    },
+    "extra" : {
+        "laravel" : {
+            "providers": [
+                "Nkaurelien\\Momopay\\Providers\\MomopayServiceProvider"
+            ]
+        }
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true
+}
