@@ -2,8 +2,9 @@
     "name": "nkaurelien/momopay",
     "description": "Paiement mobile avec mtn cameroun",
     "keywords": [
-        "paiement",
+        "paiement mobile",
         "momo",
+        "mobile money",
         "cameroun"
     ],
     "homepage": "https://github.com/nkaurelien/momopay",

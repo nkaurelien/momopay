@@ -33,7 +33,7 @@ configuration description
 
 
 
-## add routes
+## Add routes
 
 
 ```text
@@ -41,4 +41,21 @@ configuration description
 Route::any('/payment/momo/callback', 'PaymentMomoController@callback')->name('payment.momo.callback');
 Route::get('/payment/momo/transaction/{id}', 'PaymentMomoController@getPayment')->name('payment.momo.callback');
 
+```
+
+## Use in controller
+
+```php
+
+    $momoRequestToPayDto = new \Nkaurelien\Momopay\Fluent\MomoRequestToPayDto;
+    $momoRequestToPayDto->amount = 3000;
+    $momoRequestToPayDto->currency = 'XAF'; // Use EUR when you are in sandbox mode
+    $momoRequestToPayDto->payeeNote = '';
+    $momoRequestToPayDto->payerMessage = '';
+    $momoRequestToPayDto->externalId = 'my_product_id';
+    $momoRequestToPayDto->payer->telephone = '2376XXXXXXXX';
+
+    $refId = \Ramsey\Uuid\Uuid::uuid4()->toString();
+
+    $requestToPayResult = $this->paymentMomoRepository->requestToPay($momoRequestToPayDto, $refId);
 ```
