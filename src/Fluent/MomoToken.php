@@ -1,7 +1,7 @@
 <?php
 
 
-namespace Nkaurelien\Fluent;
+namespace Nkaurelien\Momopay\Fluent;
 
 
 use Illuminate\Support\Fluent;
