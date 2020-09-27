@@ -4,6 +4,7 @@
 namespace Nkaurelien\Momopay\Repository;
 
 
+use Nkaurelien\Momopay\Fluent\MomoAccountBalanceResultDto;
 use  Nkaurelien\Momopay\Fluent\MomoRequestToPayDto;
 use  Nkaurelien\Momopay\Fluent\MomoRequestToPayResultDto;
 use Illuminate\Support\Facades\Log;
@@ -61,6 +62,24 @@ class PaymentMomoRepository extends PaymentMomoSandboxRepository
             ->send();
 
         return new MomoRequestToPayResultDto($response->body);
+    }
+
+    /**
+     * @return MomoAccountBalanceResultDto
+     * @throws \Httpful\Exception\ConnectionErrorException
+     */
+    public function getAccountBalance()
+    {
+
+        $url = self::$BASE_URL . "/collection/v1_0/account/balance";
+        $response = \Httpful\Request::get($url)
+            ->expectsJson()
+            ->addHeader('Ocp-Apim-Subscription-Key', config('services.mtn.subscription_key'))
+            ->addHeader('X-Target-Environment', self::$TARGER_ENVIRONMENT)
+            ->addHeader('Authorization', $this->createBearerToken())
+            ->send();
+
+        return new MomoAccountBalanceResultDto($response->body);
     }
 
     /**
