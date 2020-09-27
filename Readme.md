@@ -39,7 +39,7 @@ configuration description
 ```text
 
 Route::any('/payment/momo/callback', 'PaymentMomoController@callback')->name('payment.momo.callback');
-Route::get('/payment/momo/transaction/{id}', 'PaymentMomoController@getPayment')->name('payment.momo.callback');
+Route::get('/payment/momo/transaction/{id}', 'PaymentMomoController@getPayment')->name('payment.momo.gettransaction');
 
 ```
 
