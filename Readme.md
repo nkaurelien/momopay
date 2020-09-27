@@ -28,6 +28,7 @@ Add config to `config/services.php`
 
 
     'mtn' => [
+        'currency' => env('MTN_MOMO_CURRENCY', 'XAF'),
         'go_live' => env('MTN_MOMO_GO_LIVE',false),
         'api_key' => env('MTN_MOMO_USER_API_KEY'),
         'reference_id' => env('MTN_MOMO_ID'),
