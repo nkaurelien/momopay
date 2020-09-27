@@ -3,6 +3,20 @@
 # MOMOPAY
 
 
+![Packagist License](https://img.shields.io/packagist/l/nkaurelien/momopay)
+![Packagist Version (including pre-releases)](https://img.shields.io/packagist/v/nkaurelien/momopay?include_prereleases)
+![Packagist Downloads](https://img.shields.io/packagist/dt/nkaurelien/momopay)
+
+## Description
+
+A packages for mobile money payment in Cameroun. <br> Only [Mtn Cameroun](https://mtn.cm/MoMo/) is supported
+
+## Installation
+
+
+```shellscript
+composer require nkaurelien/momopay
+```
 
 ## Configuration
 
@@ -25,13 +39,14 @@ Add config to `config/services.php`
 
 ```
 
-configuration description
+Configuration description
 
 - `reference_id` : is the user id 
 - `subscription_key` : is the Ocp-Apim-Subscription-Key
 - `target_environment` : can be sanbox or mtncameroon (when you go live)
 
 
+Don't forget to cache the configurations again with the command `php artisan config:cache`
 
 ## Add routes
 
@@ -59,3 +74,12 @@ Route::get('/payment/momo/transaction/{id}', 'PaymentMomoController@getPayment')
 
     $requestToPayResult = $this->paymentMomoRepository->requestToPay($momoRequestToPayDto, $refId);
 ```
+
+### Todo
+- [ ] Create payment exceptions class
+- [ ] Create payment events
+- [ ] Email notification on payment success
+- [ ] Add orange money payment method
+
+### Useful links
+- [MTN MoMo API](https://momodeveloper.mtn.com/)
