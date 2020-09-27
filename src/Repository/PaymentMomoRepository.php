@@ -53,6 +53,7 @@ class PaymentMomoRepository extends PaymentMomoSandboxRepository
     public function getPayment($referenceId)
     {
 
+        dd($this->getAccountBalance());
         $url = self::$BASE_URL . "/collection/v1_0/requesttopay/{$referenceId}";
         $response = \Httpful\Request::get($url)
             ->expectsJson()

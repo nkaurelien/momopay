@@ -20,7 +20,7 @@ abstract class PaymentMomoBaseRepository
 
         $go_live = config('services.mtn.go_live');
         self::$BASE_URL = $go_live ? self::$BASE_URL : self::$BASE_SANDBOX_URL;
-        self::$target_environment = $go_live ? 'mtncameroon' : 'sandbox';
+        self::$TARGER_ENVIRONMENT = $go_live ? 'mtncameroon' : 'sandbox';
 
     }
 

@@ -65,7 +65,7 @@ Route::get('/payment/momo/transaction/{id}', 'PaymentMomoController@getPayment')
 ```php
 
     $momoRequestToPayDto = new \Nkaurelien\Momopay\Fluent\MomoRequestToPayDto;
-    $momoRequestToPayDto->amount = 3000;
+    $momoRequestToPayDto->amount = 100;
     $momoRequestToPayDto->currency = 'XAF'; // Use EUR when you are in sandbox mode
     $momoRequestToPayDto->payeeNote = '';
     $momoRequestToPayDto->payerMessage = '';
