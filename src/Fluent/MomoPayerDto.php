@@ -10,8 +10,7 @@ use Illuminate\Support\Fluent;
  * Class MomoToken
  * @package  Nkaurelien\Momopay\Fluent
  * @property string partyIdType "MSISDN"
- * @property string telephone
- * @property-read  string partyId Le numero de telephone
+ * @property  string partyId Le numero de telephone
  */
 class MomoPayerDto extends Fluent
 {

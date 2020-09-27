@@ -1,7 +1,7 @@
 <?php
 
 
-namespace  Nkaurelien\Momopay\Repository;
+namespace Nkaurelien\Momopay\Repository;
 
 
 use  Nkaurelien\Momopay\Fluent\MomoRequestToPayDto;
@@ -9,8 +9,9 @@ use  Nkaurelien\Momopay\Fluent\MomoRequestToPayResultDto;
 use Illuminate\Support\Facades\Log;
 use  Nkaurelien\Momopay\Fluent\MomoToken;
 use Illuminate\Support\Fluent;
+use function Couchbase\defaultDecoder;
 
-class PaymentMomoRepository extends  PaymentMomoSandboxRepository
+class PaymentMomoRepository extends PaymentMomoSandboxRepository
 {
 
     /**
@@ -19,20 +20,26 @@ class PaymentMomoRepository extends  PaymentMomoSandboxRepository
      * @return MomoRequestToPayResultDto
      * @throws \Httpful\Exception\ConnectionErrorException
      */
-    public function requestToPay (MomoRequestToPayDto $momoRequestToPayDto, $referenceId)
+    public function requestToPay(MomoRequestToPayDto $momoRequestToPayDto, $referenceId)
     {
 
-        $url = self::$base_url . "/collection/v1_0/requesttopay";
-        $response = \Httpful\Request::post($url, $momoRequestToPayDto->toArray())
-            ->expectsJson()
+        $url = self::$BASE_URL . "/collection/v1_0/requesttopay";
+        $postRequest = \Httpful\Request::post($url)
+            ->body($momoRequestToPayDto->toArray())
             ->addHeader('Ocp-Apim-Subscription-Key', config('services.mtn.subscription_key'))
-            ->addHeader('X-Target-Environment', config('services.mtn.target_environment'))
-            ->addHeader('X-Callback-Url', route(config('services.mtn.payment_callback_route')))
-            ->addHeader('X-Reference-Id', $referenceId )
+            ->addHeader('X-Target-Environment', self::$TARGER_ENVIRONMENT)
+            ->addHeader('X-Reference-Id', $referenceId)
             ->addHeader('Authorization', $this->createBearerToken())
-//            ->authenticateWithBasic(config('services.mtn.reference_id'), config('services.mtn.api_key'))
-            ->send();
+            ->expectsJson()
+            ->sendsJson();
 
+        $payment_callback_route = config('services.mtn.payment_callback_route');
+        if (!blank($payment_callback_route)) {
+            $postRequest->addHeader('X-Callback-Url', route($payment_callback_route));
+        }
+
+        $response = $postRequest
+            ->send();
 
         return $this->getPayment($referenceId);
     }
@@ -42,14 +49,14 @@ class PaymentMomoRepository extends  PaymentMomoSandboxRepository
      * @return MomoRequestToPayResultDto
      * @throws \Httpful\Exception\ConnectionErrorException
      */
-    public function getPayment ($referenceId)
+    public function getPayment($referenceId)
     {
 
-        $url = self::$base_url . "/collection/v1_0/requesttopay/{$referenceId}";
+        $url = self::$BASE_URL . "/collection/v1_0/requesttopay/{$referenceId}";
         $response = \Httpful\Request::get($url)
             ->expectsJson()
             ->addHeader('Ocp-Apim-Subscription-Key', config('services.mtn.subscription_key'))
-            ->addHeader('X-Target-Environment', config('services.mtn.target_environment'))
+            ->addHeader('X-Target-Environment', self::$TARGER_ENVIRONMENT)
             ->addHeader('Authorization', $this->createBearerToken())
             ->send();
 
@@ -59,7 +66,7 @@ class PaymentMomoRepository extends  PaymentMomoSandboxRepository
     /**
      * @throws \Httpful\Exception\ConnectionErrorException
      */
-    public  function createToken ()
+    public function createToken()
     {
 
         $key = 'MomoAccessToken';
@@ -70,7 +77,7 @@ class PaymentMomoRepository extends  PaymentMomoSandboxRepository
             return new MomoToken($tokenCachedData);
         }
 
-        $url = self::$base_url . "/collection/token";
+        $url = self::$BASE_URL . "/collection/token";
         $response = \Httpful\Request::post($url)
             ->expectsJson()
             ->addHeader('Ocp-Apim-Subscription-Key', config('services.mtn.subscription_key'))
@@ -85,7 +92,7 @@ class PaymentMomoRepository extends  PaymentMomoSandboxRepository
 
         $token = new MomoToken($response->body);
 
-        \Cache::add($key, $token->toArray(), $token->expirationDate() );
+        \Cache::add($key, $token->toArray(), $token->expirationDate());
 
         return $token;
     }
@@ -94,19 +101,19 @@ class PaymentMomoRepository extends  PaymentMomoSandboxRepository
      * @return string
      * @throws \Httpful\Exception\ConnectionErrorException
      */
-    public  function createBearerToken ()
+    public function createBearerToken()
     {
         return 'Bearer ' . $this->createToken()->access_token;
     }
 
-    public  function createBasicAuthorization ()
+    public function createBasicAuthorization()
     {
         $cre = config('services.mtn.reference_id') . ':' . config('services.mtn.api_key');
         return 'Basic ' . base64_encode($cre);
     }
 
 
-    public function handlePaymentCallbackResult (MomoRequestToPayResultDto $result)
+    public function handlePaymentCallbackResult(MomoRequestToPayResultDto $result)
     {
         $json = $result->toJson();
         Log::debug($json);
