@@ -4,6 +4,8 @@
 namespace Nkaurelien\Momopay\Repository;
 
 
+use Illuminate\Support\Arr;
+use Nkaurelien\Momopay\Exceptions\ResourceNotFound;
 use Nkaurelien\Momopay\Fluent\MomoAccountBalanceResultDto;
 use  Nkaurelien\Momopay\Fluent\MomoRequestToPayDto;
 use  Nkaurelien\Momopay\Fluent\MomoRequestToPayResultDto;
@@ -52,8 +54,6 @@ class PaymentMomoRepository extends PaymentMomoSandboxRepository
      */
     public function getPayment($referenceId)
     {
-
-        dd($this->getAccountBalance());
         $url = self::$BASE_URL . "/collection/v1_0/requesttopay/{$referenceId}";
         $response = \Httpful\Request::get($url)
             ->expectsJson()
@@ -61,6 +61,8 @@ class PaymentMomoRepository extends PaymentMomoSandboxRepository
             ->addHeader('X-Target-Environment', self::$TARGER_ENVIRONMENT)
             ->addHeader('Authorization', $this->createBearerToken())
             ->send();
+
+        throw_if(Arr::has($response->body, 'code') && $response->body['code'] === 'RESOURCE_NOT_FOUND', new ResourceNotFound());
 
         return new MomoRequestToPayResultDto($response->body);
     }
