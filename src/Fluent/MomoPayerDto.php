@@ -21,6 +21,7 @@ class MomoPayerDto extends Fluent
     {
         $instance = new static();
         $instance->partyIdType = "MSISDN";
+        return $instance;
     }
 
     public function setTelephoneAttribute($value)

@@ -9,7 +9,9 @@
 
 ## Description
 
-A packages for mobile money payment in Cameroun. <br> Only [Mtn Cameroun](https://mtn.cm/MoMo/) is supported
+A packages for mobile money payment in Cameroun. <br> Only [Mtn Cameroon](https://mtn.cm/MoMo/) is supported
+
+:stop_sign: **please wait for the first stable release before use this package**
 
 ## Installation
 
