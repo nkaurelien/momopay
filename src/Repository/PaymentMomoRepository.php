@@ -62,7 +62,7 @@ class PaymentMomoRepository extends PaymentMomoSandboxRepository
             ->addHeader('Authorization', $this->createBearerToken())
             ->send();
 
-        throw_if(Arr::has($response->body, 'code') && $response->body['code'] === 'RESOURCE_NOT_FOUND', new ResourceNotFound());
+        throw_if(Arr::has($response->body, 'code') && $response->body->code === 'RESOURCE_NOT_FOUND', new ResourceNotFound());
 
         return new MomoRequestToPayResultDto($response->body);
     }
