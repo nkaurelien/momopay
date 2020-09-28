@@ -28,7 +28,7 @@ class PaymentMomoRepository extends PaymentMomoSandboxRepository
     public function requestToPay(MomoRequestToPayDto $momoRequestToPayDto, $referenceId)
     {
 
-        $url = self::$BASE_URL . "/collection/v1_0/requesttopay";
+        $url = self::$BASE_URL . "/collection/v1_0/requesttopay/";
         $postRequest = \Httpful\Request::post($url)
             ->body($momoRequestToPayDto->toArray())
             ->addHeader('Ocp-Apim-Subscription-Key', config('services.mtn.subscription_key'))
