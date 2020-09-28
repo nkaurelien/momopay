@@ -23,6 +23,7 @@ use Nkaurelien\Momopay\Exceptions\ResourceNotFoundException;
  * @property string financialTransactionId
  * @property string status
  * @property string reason
+ * @property string code
  */
 class MomoRequestToPayResultDto extends Fluent
 {
@@ -59,21 +60,21 @@ class MomoRequestToPayResultDto extends Fluent
         return $this->status === self::STATUT_FAILED;
     }
 
-    public function isFailedBecausePayerNotFound()
+    public function isFailureBecausePayerNotFound()
     {
-        return $this->reason === self::FAILURE_PAYER_NOT_FOUND;
+        return $this->code === self::FAILURE_PAYER_NOT_FOUND || $this->reason === self::FAILURE_PAYER_NOT_FOUND;
     }
 
-    public function isFailedBecauseResourceNotFound()
+    public function isFailureBecauseResourceNotFound()
     {
-        return $this->reason === self::FAILURE_RESOURCE_NOT_FOUND;
+        return $this->code === self::FAILURE_RESOURCE_NOT_FOUND || $this->reason === self::FAILURE_RESOURCE_NOT_FOUND;
     }
 
 
     public function detectFailure()
     {
-        throw_if(Arr::has($this->toArray(), 'code') && $this->code === MomoRequestToPayResultDto::FAILURE_RESOURCE_NOT_FOUND, new ResourceNotFoundException());
-        throw_if(Arr::has($this->toArray(), 'code') && $this->code === MomoRequestToPayResultDto::FAILURE_PAYER_NOT_FOUND, new PayerNotFoundException());
+        throw_if(Arr::has($this->toArray(), 'code') && $this->isFailureBecausePayerNotFound(), new PayerNotFoundException());
+        throw_if(Arr::has($this->toArray(), 'code') && $this->isFailureBecauseResourceNotFound(), new ResourceNotFoundException());
     }
 
     public static function errorMessage(string $key)
