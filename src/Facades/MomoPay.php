@@ -17,6 +17,9 @@ use Nkaurelien\Momopay\Fluent\MomoRequestToPayResultDto;
  */
 class MomoPay extends Facade
 {
+    const OPERATOR_MTN_MOMO = 'MTN MOBILE MONEY';
+    const OPERATOR_ORANGE_MONEY = 'ORANGE MONEY';
+
     protected static function getFacadeAccessor() {
         return self::class;
     }

@@ -5,7 +5,9 @@ namespace Nkaurelien\Momopay\Repository;
 
 
 use Illuminate\Support\Arr;
+use Nkaurelien\Momopay\Events\PaymentAccepted;
 use Nkaurelien\Momopay\Exceptions\ResourceNotFound;
+use Nkaurelien\Momopay\Facades\MomoPay;
 use Nkaurelien\Momopay\Fluent\MomoAccountBalanceResultDto;
 use  Nkaurelien\Momopay\Fluent\MomoRequestToPayDto;
 use  Nkaurelien\Momopay\Fluent\MomoRequestToPayResultDto;
@@ -44,7 +46,11 @@ class PaymentMomoRepository extends PaymentMomoSandboxRepository
         $response = $postRequest
             ->send();
 
-        return $this->getPayment($referenceId);
+        $momoRequestToPayResultDto = $this->getPayment($referenceId);
+
+        event(new PaymentAccepted(MomoPay::OPERATOR_MTN_MOMO, $referenceId, $momoRequestToPayResultDto));
+
+        return $momoRequestToPayResultDto;
     }
 
     /**

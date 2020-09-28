@@ -20,12 +20,27 @@ A packages for mobile money payment in Cameroun. <br> Only [Mtn Cameroon](https:
 composer require nkaurelien/momopay
 ```
 
+(optional) Add the service provider in `config\app.php`
+
+```php 
+    providers' => [
+        #...
+        \Nkaurelien\Momopay\Providers\MomopayServiceProvider::class,
+    ]
+```
+(optional) Add the service facade in `config\app.php`
+```php 
+    aliases' => [
+        #...
+        'MomoPay' => \Nkaurelien\Momopay\Facades\MomoPay::class
+    ]
+```
+
 ## Configuration
 
 Add config to `config/services.php`
 
 ```text
-
 
     'mtn' => [
         'currency' => env('MTN_MOMO_CURRENCY', 'XAF'),
@@ -37,7 +52,6 @@ Add config to `config/services.php`
         'payment_callback_host' => env('MTN_MOMO_CALLBACK_HOST'),
         'notification_email' => env('MTN_MOMO_NOTIFICATION_EMAIL'),
     ],
-
 
 ```
 
@@ -53,7 +67,7 @@ Don't forget to cache the configurations again with the command `php artisan con
 ## Add routes
 
 
-```text
+```php
 
 Route::any('/payment/momo/callback', 'PaymentMomoController@callback')->name('payment.momo.callback');
 Route::get('/payment/momo/transaction/{id}', 'PaymentMomoController@getPayment')->name('payment.momo.gettransaction');
@@ -61,27 +75,45 @@ Route::get('/payment/momo/transaction/{id}', 'PaymentMomoController@getPayment')
 ```
 
 ## Use in controller
+First inject the repository class
 
+```php
+    private $paymentMomoRepository;
+    public function __construct(PaymentMomoRepository $paymentMomoRepository){ #...   
+```
+Then consume repository instance to implement your payment logic
 ```php
 
     $momoRequestToPayDto = new \Nkaurelien\Momopay\Fluent\MomoRequestToPayDto;
     $momoRequestToPayDto->amount = 100;
-    $momoRequestToPayDto->currency = 'XAF'; // Use EUR when you are in sandbox mode
     $momoRequestToPayDto->payeeNote = '';
     $momoRequestToPayDto->payerMessage = '';
     $momoRequestToPayDto->externalId = 'my_product_id';
     $momoRequestToPayDto->payer->telephone = '2376XXXXXXXX';
+    
+    # optional
+    $momoRequestToPayDto->currency = 'XAF'; // Use EUR when you are in sandbox mode
 
     $refId = \Ramsey\Uuid\Uuid::uuid4()->toString();
 
     $requestToPayResult = $this->paymentMomoRepository->requestToPay($momoRequestToPayDto, $refId);
 ```
+___
+If your prefer the facade instead of injection
+```php
+    #...
+    $requestToPayResult = \Nkaurelien\Momopay\Facades\MomoPay::requestToPay($momoRequestToPayDto, $refId);
+```
 
-### Todo
+## Capture events
+You can listen to : <br>
+- **Nkaurelien\Momopay\Events\PaymentAccepted** is fired after the success of request to pay 
+
+## Todo
 - [ ] Create payment exceptions class
 - [ ] Create payment events
 - [ ] Email notification on payment success
 - [ ] Add orange money payment method
 
-### Useful links
+## Useful links
 - [MTN MoMo API](https://momodeveloper.mtn.com/)
