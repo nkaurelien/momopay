@@ -4,7 +4,7 @@
 namespace Nkaurelien\Momopay\Exceptions;
 
 
-class ResourceNotFound extends \Exception
+class ResourceNotFoundException extends MomoPayException
 {
 
     protected $message = "Requested resource was not found.";

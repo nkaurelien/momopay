@@ -4,17 +4,18 @@
 namespace Nkaurelien\Momopay\Repository;
 
 
+use Httpful\Response;
 use Illuminate\Support\Arr;
 use Nkaurelien\Momopay\Events\PaymentAccepted;
-use Nkaurelien\Momopay\Exceptions\ResourceNotFound;
+use Nkaurelien\Momopay\Exceptions\MomoPayException;
+use Nkaurelien\Momopay\Exceptions\PayerNotFoundException;
+use Nkaurelien\Momopay\Exceptions\ResourceNotFoundException;
 use Nkaurelien\Momopay\Facades\MomoPay;
 use Nkaurelien\Momopay\Fluent\MomoAccountBalanceResultDto;
 use  Nkaurelien\Momopay\Fluent\MomoRequestToPayDto;
 use  Nkaurelien\Momopay\Fluent\MomoRequestToPayResultDto;
 use Illuminate\Support\Facades\Log;
 use  Nkaurelien\Momopay\Fluent\MomoToken;
-use Illuminate\Support\Fluent;
-use function Couchbase\defaultDecoder;
 
 class PaymentMomoRepository extends PaymentMomoSandboxRepository
 {
@@ -39,12 +40,14 @@ class PaymentMomoRepository extends PaymentMomoSandboxRepository
             ->sendsJson();
 
         $payment_callback_route = config('services.mtn.payment_callback_route');
+
         if (!blank($payment_callback_route)) {
             $postRequest->addHeader('X-Callback-Url', route($payment_callback_route));
         }
 
-        $response = $postRequest
-            ->send();
+        $response = $postRequest->send();
+
+        $this->throwOnResponseError($response);
 
         $momoRequestToPayResultDto = $this->getPayment($referenceId);
 
@@ -68,9 +71,15 @@ class PaymentMomoRepository extends PaymentMomoSandboxRepository
             ->addHeader('Authorization', $this->createBearerToken())
             ->send();
 
-        throw_if(Arr::has($response->body, 'code') && $response->body->code === 'RESOURCE_NOT_FOUND', new ResourceNotFound());
+        $this->throwOnResponseError($response);
 
-        return new MomoRequestToPayResultDto($response->body);
+        $result = new MomoRequestToPayResultDto($response->body);
+        $result->referenceId = $referenceId;
+
+        $result->detectFailure();
+
+
+        return $result;
     }
 
     /**
@@ -146,6 +155,21 @@ class PaymentMomoRepository extends PaymentMomoSandboxRepository
         $json = $result->toJson();
         Log::debug($json);
 
+    }
+
+    /**
+     * @param Response $response
+     * @throws MomoPayException
+     */
+    private function throwOnResponseError(Response $response)
+    {
+        if ($response->code < 200 || $response->code > 399) {
+            if ($response->hasBody()) {
+                throw new MomoPayException($response->body, $response->code);
+            } else {
+                throw new MomoPayException('', $response->code);
+            }
+        }
     }
 
 

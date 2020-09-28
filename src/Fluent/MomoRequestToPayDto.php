@@ -33,7 +33,7 @@ class MomoRequestToPayDto extends Fluent
     public function toArray()
     {
         if ($this->payer !== null) {
-            $this->attributes['payer'] = $this->payer->toArray();
+            return array_merge($this->attributes, ['payer'=> $this->payer->toArray()] ) ;
         }
         return $this->attributes;
     }
