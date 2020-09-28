@@ -73,8 +73,8 @@ class MomoRequestToPayResultDto extends Fluent
 
     public function detectFailure()
     {
-        throw_if(Arr::has($this->toArray(), 'code') && $this->isFailureBecausePayerNotFound(), new PayerNotFoundException());
-        throw_if(Arr::has($this->toArray(), 'code') && $this->isFailureBecauseResourceNotFound(), new ResourceNotFoundException());
+        throw_if($this->isFailureBecausePayerNotFound(), new PayerNotFoundException());
+        throw_if($this->isFailureBecauseResourceNotFound(), new ResourceNotFoundException());
     }
 
     public static function errorMessage(string $key)
