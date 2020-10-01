@@ -16,7 +16,7 @@ class PaymentMomoSandboxRepository extends PaymentMomoBaseRepository
     {
 
         $reference_id = config('services.mtn.reference_id');
-        $url = self::$base_url . "/v1_0/apiuser/{$reference_id}/apikey";
+        $url = self::$BASE_URL . "/v1_0/apiuser/{$reference_id}/apikey";
         $response = \Httpful\Request::post($url, [
             'providerCallbackHost' => config('services.mtn.app_domain')
         ])
@@ -32,7 +32,7 @@ class PaymentMomoSandboxRepository extends PaymentMomoBaseRepository
         $reference_id = $reference_id ?? config('services.mtn.reference_id');
         $providerCallbackHost = $providerCallbackHost ?? route(config('services.mtn.payment_callback_host'));
 
-        $url = self::$base_url . "/v1_0/apiuser/{$reference_id}";
+        $url = self::$BASE_URL . "/v1_0/apiuser/{$reference_id}";
         $response = \Httpful\Request::post($url, [
             'providerCallbackHost' => $providerCallbackHost,
         ])
@@ -48,7 +48,7 @@ class PaymentMomoSandboxRepository extends PaymentMomoBaseRepository
     {
 
         $reference_id = $reference_id ?? config('services.mtn.reference_id');
-        $url = self::$base_url . "/v1_0/apiuser/{$reference_id}";
+        $url = self::$BASE_URL . "/v1_0/apiuser/{$reference_id}";
         $response = \Httpful\Request::post($url)
             ->expectsJson()
             ->addHeader('Ocp-Apim-Subscription-Key', config('services.mtn.subscription_key'))

@@ -25,7 +25,16 @@ class MomoRequestToPayDto extends Fluent
             $this->payer =  MomoPayerDto::getIntance();
         }
         if (blank($this->currency)) {
-            $this->currency = 'EUR';
+            $this->currency = config('services.mtn.currency');
         }
+    }
+
+
+    public function toArray()
+    {
+        if ($this->payer !== null) {
+            return array_merge($this->attributes, ['payer'=> $this->payer->toArray()] ) ;
+        }
+        return $this->attributes;
     }
 }
