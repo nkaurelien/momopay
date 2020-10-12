@@ -2,7 +2,8 @@
 
 namespace  Nkaurelien\Momopay\Providers;
 
-use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
+use App\Console\Commands\MomoPayVerificationCommand;
+use Illuminate\Support\ServiceProvider;
 use Nkaurelien\Momopay\Facades\MomoPay;
 use Nkaurelien\Momopay\Repository\PaymentMomoRepository;
 
@@ -24,6 +25,7 @@ class MomopayServiceProvider extends ServiceProvider
             return new PaymentMomoRepository;
         });
 
+        $this->registerArtisanCommand();
         $this->databases();
 
     }
@@ -52,8 +54,7 @@ class MomopayServiceProvider extends ServiceProvider
     {
         if ($this->app->runningInConsole()) {
             $this->commands([
-//                FooCommand::class,
-//                BarCommand::class,
+                MomoPayVerificationCommand::class,
             ]);
         }
     }

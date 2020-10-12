@@ -11,10 +11,10 @@ use Nkaurelien\Momopay\Exceptions\ResourceNotFoundException;
 /**
  * Class MomoToken
  * @package  Nkaurelien\Momopay\Fluent
+ * @property string referenceId
  * @property-read string amount
  * @property-read string payerMessage
  * @property-read string externalId
- * @property string referenceId
  * @property-read string payeeNote
  * @property-read string currency default EUR
  * @property-read MomoPayerDto payer

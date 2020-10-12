@@ -17,6 +17,8 @@ use  Nkaurelien\Momopay\Fluent\MomoRequestToPayDto;
 use  Nkaurelien\Momopay\Fluent\MomoRequestToPayResultDto;
 use Illuminate\Support\Facades\Log;
 use  Nkaurelien\Momopay\Fluent\MomoToken;
+use Nkaurelien\Momopay\Fluent\MomoVerification;
+use Nkaurelien\Momopay\Helpers\Console;
 use Nkaurelien\Momopay\Models\MomoTransaction;
 
 class PaymentMomoRepository extends PaymentMomoSandboxRepository
@@ -65,24 +67,36 @@ class PaymentMomoRepository extends PaymentMomoSandboxRepository
         return $momoRequestToPayResultDto;
     }
 
-    public function verifyTransactions()
+    /**
+     * @param null $referenceId
+     * @return \Illuminate\Support\Collection<MomoVerification>
+     */
+    public function verifyTransactions($referenceId = null)
     {
-        MomoTransaction::toVerify()->get()->each(function (MomoTransaction $transaction){
-            $referenceId = $transaction->reference_id;
+        $query = MomoTransaction::toVerify();
+        if ($referenceId === null) {
+            $query = $query->where('reference_id', $referenceId);
+        }
+        return $query->get()->map(function (MomoTransaction $transaction) {
+            $reference_id = $transaction->reference_id;
             try {
-                $result = $this->getPayment($referenceId);
+                $result = $this->getPayment($reference_id);
                 $transaction->transaction_status = Str::upper($result->status);
                 $transaction->verified_at = Carbon::today()->toDateString();
                 $transaction->save();
                 if ($result->isSuccessful()) {
-                    event(new PaymentSuccessful(MomoPay::OPERATOR_MTN_MOMO, $referenceId, $result));
+                    event(new PaymentSuccessful(MomoPay::OPERATOR_MTN_MOMO, $reference_id, $result));
                 } elseif ($result->isFailed()) {
-                    event(new PaymentFailed(MomoPay::OPERATOR_MTN_MOMO, $referenceId, $result));
+                    event(new PaymentFailed(MomoPay::OPERATOR_MTN_MOMO, $reference_id, $result));
                 } elseif ($result->isAccepted()) {
-                    event(new PaymentAccepted(MomoPay::OPERATOR_MTN_MOMO, $referenceId, $result));
+                    event(new PaymentAccepted(MomoPay::OPERATOR_MTN_MOMO, $reference_id, $result));
                 }
+                return new  MomoVerification( ['message' => "Payment referenceId:{$result->referenceId} verified", 'referenceId' => $result->referenceId, 'status' => $result->status, 'hasError' => false]);
             } catch (\Exception $exception) {
-                Log::error($exception->getMessage(), compact('referenceId'));
+                Log::error($exception->getMessage(), [ 'referenceId' => $reference_id, ]);
+//                Console::writeLn(['message' => $exception->getMessage(), 'reference_id' => $reference_id, 'status' => 'error']);
+                $errorMessage = Str::words($exception->getMessage(), 20);
+                return new MomoVerification(['message' => "Payment referenceId:{$reference_id} has error {$errorMessage}", 'error' => $exception, 'referenceId' => $reference_id, 'status' => 'ERROR', 'hasError' => true]);
             }
         });
     }
@@ -202,6 +216,5 @@ class PaymentMomoRepository extends PaymentMomoSandboxRepository
             }
         }
     }
-
 
 }

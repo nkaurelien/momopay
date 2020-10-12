@@ -11,8 +11,6 @@
 
 A package for mobile money payments in Cameroun. <br> Only [Mtn Cameroon](https://mtn.cm/MoMo/) is supported 
 
-:stop_sign: **Please wait for the first stable release before using this package**
-
 ## Installation
 
 
@@ -36,6 +34,15 @@ composer require nkaurelien/momopay
     ]
 ```
 
+Run publish
+```php 
+   php artisan vendor:publish 
+```
+
+Run database migration
+```php 
+   php artisan migrate
+```
 ## Configuration
 
 Add config to `config/services.php`
@@ -107,13 +114,22 @@ If you prefer the facade instead of injection then do:
 
 ## Capture events
 You can listen to : <br>
-- **Nkaurelien\Momopay\Events\PaymentAccepted** (pending) is fired after the success of request to pay or a new verification 
 - **Nkaurelien\Momopay\Events\PaymentFailed** is fired after a new verification 
 - **Nkaurelien\Momopay\Events\PaymentSuccessful** is fired after a new verification 
+- **Nkaurelien\Momopay\Events\PaymentAccepted** (pending) is fired after the success of request to pay or a new verification 
+
+## Use commands
+To verify transactions do 
+````shell script
+    php artisan momopay:verify-transactions # to verify all transactions
+    php artisan momopay:verify-transactions [referenceId] # to verify a specific transaction
+````
 
 ## Todo
+- [X] Create payment events
 - [ ] Create payment exceptions class
-- [ ] Create payment events
+- [ ] Create commands for scheduler and cron jobs
+- [ ] Create transaction table for re-vefication
 - [ ] Email notification on payment success
 - [ ] Add orange money payment method
 
