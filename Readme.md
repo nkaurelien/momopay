@@ -107,7 +107,9 @@ If your prefer the facade instead of injection
 
 ## Capture events
 You can listen to : <br>
-- **Nkaurelien\Momopay\Events\PaymentAccepted** is fired after the success of request to pay 
+- **Nkaurelien\Momopay\Events\PaymentAccepted** (pending) is fired after the success of request to pay or a new verification 
+- **Nkaurelien\Momopay\Events\PaymentFailed** is fired after a new verification 
+- **Nkaurelien\Momopay\Events\PaymentSuccessful** is fired after a new verification 
 
 ## Todo
 - [ ] Create payment exceptions class

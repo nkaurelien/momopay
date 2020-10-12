@@ -24,7 +24,7 @@ class MomopayServiceProvider extends ServiceProvider
             return new PaymentMomoRepository;
         });
 
-//        $this->registerConfig();
+        $this->databases();
 
     }
 
@@ -35,12 +35,41 @@ class MomopayServiceProvider extends ServiceProvider
 //     */
 //    protected function registerConfig()
 //    {
-//        $this->publishes([
-//            __DIR__ . '/../Config/config.php.tmpl' => config_path('momopay.php'),
-//        ], 'config');
 //        $this->mergeConfigFrom(
-//            __DIR__ . '/../Config/config.php.tmpl', 'momopay'
+//            __DIR__ . '/../Config/config.php', 'momopay'
 //        );
+//        $this->publishes([
+//            __DIR__ . '/../Config/config.php' => config_path('momopay.php'),
+//        ], 'momopay-config');
 //    }
+
+    /**
+     * Register commands.
+     *
+     * @return void
+     */
+    public function registerArtisanCommand()
+    {
+        if ($this->app->runningInConsole()) {
+            $this->commands([
+//                FooCommand::class,
+//                BarCommand::class,
+            ]);
+        }
+    }
+
+
+    /**
+     * Register Database.
+     *
+     * @return void
+     */
+    public function databases()
+    {
+        $this->loadMigrationsFrom(__DIR__.'/../stuff/migrations');
+        $this->publishes([
+            __DIR__ . '/../stuff/migrations/' => database_path('migrations'),
+        ], 'momopay-database');
+    }
 
 }
