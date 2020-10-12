@@ -9,9 +9,9 @@
 
 ## Description
 
-A packages for mobile money payment in Cameroun. <br> Only [Mtn Cameroon](https://mtn.cm/MoMo/) is supported
+A package for mobile money payments in Cameroun. <br> Only [Mtn Cameroon](https://mtn.cm/MoMo/) is supported 
 
-:stop_sign: **please wait for the first stable release before use this package**
+:stop_sign: **Please wait for the first stable release before using this package**
 
 ## Installation
 
@@ -99,7 +99,7 @@ Then consume repository instance to implement your payment logic
     $requestToPayResult = $this->paymentMomoRepository->requestToPay($momoRequestToPayDto, $refId);
 ```
 ___
-If your prefer the facade instead of injection
+If you prefer the facade instead of injection then do:
 ```php
     #...
     $requestToPayResult = \Nkaurelien\Momopay\Facades\MomoPay::requestToPay($momoRequestToPayDto, $refId);
