@@ -2,7 +2,7 @@
 
 namespace  Nkaurelien\Momopay\Providers;
 
-use App\Console\Commands\MomoPayVerificationCommand;
+use Nkaurelien\Momopay\Commands\MomoPayVerificationCommand;
 use Illuminate\Support\ServiceProvider;
 use Nkaurelien\Momopay\Facades\MomoPay;
 use Nkaurelien\Momopay\Repository\PaymentMomoRepository;

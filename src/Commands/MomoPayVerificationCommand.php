@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Console\Commands;
+namespace Nkaurelien\Momopay\Commands;
 
 use Illuminate\Console\Command;
 use Mail;
