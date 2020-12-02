@@ -210,7 +210,7 @@ class PaymentMomoRepository extends PaymentMomoSandboxRepository
     {
         if ($response->code < 200 || $response->code > 399) {
             if ($response->hasBody()) {
-                throw new MomoPayException($response->body, $response->code);
+                throw new MomoPayException($response->raw_body, $response->code);
             } else {
                 throw new MomoPayException('', $response->code);
             }
